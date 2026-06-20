@@ -1,0 +1,12 @@
+node_modules/
+dist/
+
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+toonhub-desktop.png
+toonhub-mobile.png
+
+.DS_Store
+Thumbs.db
