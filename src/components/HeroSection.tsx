@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ArrowRight } from 'lucide-react';
 import type { ToonhubCharacter } from '../data/toonhub';
 import { CharacterDetailModal } from './CharacterDetailModal';
@@ -20,6 +20,7 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const initialActiveIndexRef = useRef(activeIndex);
   const activeItem = characters[activeIndex];
 
   useEffect(() => {
@@ -66,20 +67,20 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
     const shared: CSSProperties = {
       position: 'absolute',
       aspectRatio: '0.6 / 1',
-      transition: `transform ${transition}, filter ${transition}, opacity ${transition}, left ${transition}`,
-      willChange: 'transform, filter, opacity',
+      transition: `transform ${transition}, opacity ${transition}, left ${transition}`,
+      willChange: 'transform, opacity',
     };
 
     if (role === 'center') {
       return {
         ...shared,
-        transform: `translateX(-50%) scale(${isMobile ? 1.25 : 1.68})`,
+        transform: `translateX(-50%) scale(${isMobile ? 1.28 : 1.34})`,
         filter: 'none',
         opacity: 1,
         zIndex: 20,
         left: '50%',
         height: isMobile ? '60%' : '92%',
-        bottom: isMobile ? '22%' : 0,
+        bottom: isMobile ? '15%' : '-16%',
       };
     }
 
@@ -111,13 +112,17 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
   return (
     <section
       aria-label="TOONHUB signal carousel"
-      className="relative w-full overflow-hidden"
+      className="hero-cinematic relative w-full overflow-hidden"
       style={{
         height: '100vh',
         backgroundColor: activeItem.bg,
         transition: `background-color ${transition}`,
       }}
     >
+      <div className="cinema-loader" aria-hidden="true">
+        <div className="cinema-loader__logo">TOONHUB</div>
+      </div>
+      <div className="hero-stage-light" aria-hidden="true" />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -134,7 +139,7 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
         style={{ zIndex: 2, top: isMobile ? '8%' : '4%' }}
       >
         <div
-          className="uppercase text-white"
+          className="hero-enter-title uppercase text-white"
           style={{
             fontFamily: "'Anton', sans-serif",
             fontSize: isMobile ? 'clamp(82px, 38vw, 180px)' : 'clamp(120px, 24vw, 300px)',
@@ -157,62 +162,73 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
       </div>
 
       <div className="absolute inset-0" style={{ zIndex: 3 }}>
-        {characters.map((character, index) => (
-          <div
-            key={character.src}
-            onClick={() => navigateTo(index)}
-            style={{
-              ...getItemStyle(getRole(index)),
-              cursor: !isMobile && getRole(index) !== 'center' ? 'pointer' : 'default',
-              pointerEvents: getRole(index) === 'center' ? 'none' : 'auto',
-            }}
-          >
-            <img
-              src={character.src}
-              alt=""
-              draggable={false}
-              decoding="async"
-              fetchPriority={getRole(index) === 'center' ? 'high' : 'auto'}
-              loading={getRole(index) === 'center' ? 'eager' : 'lazy'}
-              className="block"
+        {characters.map((character, index) => {
+          const role = getRole(index);
+
+          return (
+            <div
+              key={character.src}
+              className={`hero-character-frame ${
+                role === 'center' && index === initialActiveIndexRef.current ? 'hero-enter-character is-center' : ''
+              } ${role !== 'center' ? 'is-side' : ''} ${
+                role === 'back' ? 'is-back' : ''
+              }`}
+              onClick={() => navigateTo(index)}
               style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-                objectPosition: 'bottom center',
+                ...getItemStyle(role),
+                cursor: !isMobile && role !== 'center' ? 'pointer' : 'default',
+                pointerEvents: role === 'center' ? 'none' : 'auto',
               }}
-            />
-          </div>
-        ))}
+            >
+              <img
+                src={character.src}
+                alt=""
+                draggable={false}
+                decoding="async"
+                fetchPriority={role === 'center' ? 'high' : 'auto'}
+                loading={role === 'center' ? 'eager' : 'lazy'}
+                className="block"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  objectPosition: 'bottom center',
+                }}
+              />
+            </div>
+          );
+        })}
       </div>
 
       <div
         className="absolute bottom-6 left-4 sm:bottom-20 sm:left-24"
         style={{ zIndex: 60, maxWidth: 320, textShadow: readableTextShadow, pointerEvents: 'none' }}
       >
-        <p
-          className="mb-2 text-base font-bold uppercase tracking-widest text-white sm:mb-3 sm:text-[22px]"
-          style={{ opacity: 0.95, letterSpacing: '0.02em' }}
-        >
-          {activeItem.name}
-        </p>
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/85 sm:mb-3">
-          {activeItem.channel} / {activeItem.signal}
-        </p>
-        <p className="mb-4 hidden text-xs text-white sm:mb-5 sm:block sm:text-sm" style={{ opacity: 0.85, lineHeight: 1.6 }}>
-          {activeItem.concept}
-        </p>
-        <div className="mb-4 hidden items-center gap-2 text-[10px] font-bold uppercase text-white/85 sm:flex">
-          <span>{activeItem.type}</span>
-          <span className="h-1 w-1 rounded-full bg-white/70" />
-          <span>{activeItem.year}</span>
+        <div key={activeItem.code} className="hero-active-copy">
+          <p
+            className="mb-2 text-base font-bold uppercase tracking-widest text-white sm:mb-3 sm:text-[22px]"
+            style={{ opacity: 0.95, letterSpacing: '0.02em' }}
+          >
+            {activeItem.name}
+          </p>
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/85 sm:mb-3">
+            {activeItem.channel} / {activeItem.signal}
+          </p>
+          <p className="mb-4 hidden text-xs text-white sm:mb-5 sm:block sm:text-sm" style={{ opacity: 0.85, lineHeight: 1.6 }}>
+            {activeItem.concept}
+          </p>
+          <div className="mb-4 hidden items-center gap-2 text-[10px] font-bold uppercase text-white/85 sm:flex">
+            <span>{activeItem.type}</span>
+            <span className="h-1 w-1 rounded-full bg-white/70" />
+            <span>{activeItem.year}</span>
+          </div>
         </div>
       </div>
 
       <button
         type="button"
         onClick={() => setIsDetailOpen(true)}
-        className="absolute bottom-6 right-4 flex items-center border-0 bg-transparent p-0 uppercase text-white transition-opacity duration-200 hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:bottom-20 sm:right-10"
+        className="hero-discover hero-enter-copy motion-delay-3 absolute bottom-6 right-4 flex items-center border-0 bg-transparent p-0 uppercase text-white transition-opacity duration-200 hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:bottom-20 sm:right-10"
         style={{
           zIndex: 60,
           fontFamily: "'Anton', sans-serif",

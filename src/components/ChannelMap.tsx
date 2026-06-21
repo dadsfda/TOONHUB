@@ -1,4 +1,5 @@
 import type { ToonhubCharacter } from '../data/toonhub';
+import { useInView } from '../hooks/useInView';
 
 type ChannelMapProps = {
   characters: ToonhubCharacter[];
@@ -7,14 +8,22 @@ type ChannelMapProps = {
 };
 
 export function ChannelMap({ characters, activeIndex, onSelect }: ChannelMapProps) {
+  const { ref, isInView } = useInView<HTMLElement>({ once: false });
+
   return (
-    <section className="bg-white px-5 py-20 text-neutral-950 sm:px-10 sm:py-28">
-      <div className="mx-auto max-w-6xl">
+    <section
+      ref={ref}
+      className={`relative overflow-hidden bg-white px-5 py-20 text-neutral-950 sm:px-10 sm:py-28 ${
+        isInView ? 'is-visible' : ''
+      }`}
+    >
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(120deg,rgba(244,132,95,0.08),transparent_34%,rgba(110,181,255,0.09))]" />
+      <div className="relative z-10 mx-auto max-w-6xl">
         <div className="mb-10 grid gap-5 sm:grid-cols-[0.9fr_1.1fr] sm:items-end">
           <div>
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-neutral-400">Channel Map</p>
+            <p className="motion-reveal mb-3 text-xs font-bold uppercase tracking-[0.28em] text-neutral-400">Channel Map</p>
             <h2
-              className="uppercase"
+              className="motion-reveal motion-delay-1 uppercase"
               style={{
                 fontFamily: "'Anton', sans-serif",
                 fontSize: 'clamp(48px, 8vw, 112px)',
@@ -24,38 +33,53 @@ export function ChannelMap({ characters, activeIndex, onSelect }: ChannelMapProp
               Signal network
             </h2>
           </div>
-          <p className="max-w-xl text-base leading-8 text-neutral-600">
+          <p className="motion-reveal motion-delay-2 max-w-xl text-base leading-8 text-neutral-600">
             The first TOONHUB universe is mapped as four color frequencies. Select a field to tune into its character.
           </p>
         </div>
-        <div className="grid min-h-[520px] overflow-hidden rounded-[8px] border border-neutral-200 sm:grid-cols-2">
+        <div className="motion-reveal motion-delay-3 grid min-h-[520px] overflow-hidden rounded-[8px] border border-neutral-200 sm:grid-cols-2">
           {characters.map((character, index) => (
             <button
               key={character.code}
               type="button"
               onClick={() => onSelect(index)}
-              className="relative min-h-[220px] overflow-hidden p-6 text-left text-white transition-opacity hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950"
+              className={`cinematic-field signal-field relative min-h-[220px] overflow-hidden p-6 text-left text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 ${
+                activeIndex === index ? 'signal-pulse' : ''
+              }`}
               style={{ backgroundColor: character.bg }}
             >
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-white/70">{character.channel}</p>
-              <h3
-                className="uppercase"
-                style={{
-                  fontFamily: "'Anton', sans-serif",
-                  fontSize: 'clamp(42px, 7vw, 92px)',
-                  lineHeight: 0.88,
-                }}
-              >
-                {character.signal}
-              </h3>
-              <p className="absolute bottom-6 left-6 max-w-xs pr-6 text-sm leading-6 text-white/75">
-                {character.origin}
-              </p>
-              {activeIndex === index && (
-                <span className="absolute right-6 top-6 rounded-full border border-white/50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
-                  Tuned
-                </span>
-              )}
+              <img
+                src={character.src}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+                className="pointer-events-none absolute -bottom-14 right-[-34px] z-0 h-[250px] w-auto opacity-[0.2] blur-[1px] saturate-125 sm:h-[300px]"
+              />
+              <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/4 via-transparent to-black/10" />
+              <div className="motion-content flex h-full min-h-[172px] flex-col justify-between gap-8">
+                <div>
+                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-white/70">{character.channel}</p>
+                  <h3
+                    className="max-w-[9ch] uppercase"
+                    style={{
+                      fontFamily: "'Anton', sans-serif",
+                      fontSize: 'clamp(42px, 6.4vw, 86px)',
+                      lineHeight: 0.9,
+                    }}
+                  >
+                    {character.signal}
+                  </h3>
+                </div>
+                <div className="flex items-end justify-between gap-5">
+                  <p className="max-w-xs text-sm leading-6 text-white/78">{character.origin}</p>
+                  {activeIndex === index && (
+                    <span className="shrink-0 rounded-full border border-white/50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
+                      Tuned
+                    </span>
+                  )}
+                </div>
+              </div>
             </button>
           ))}
         </div>
