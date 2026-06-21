@@ -43,6 +43,8 @@ export function CharacterChannels({ characters, activeIndex, onSelect }: Charact
               key={character.code}
               type="button"
               onClick={() => onSelect(index)}
+              data-cursor="channel-card"
+              data-cursor-color={character.bg}
               className={`cinematic-card motion-reveal group min-h-[310px] rounded-[8px] border p-5 text-left text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
                 activeIndex === index ? 'signal-pulse border-white/45' : 'border-white/12'
               } relative overflow-hidden`}

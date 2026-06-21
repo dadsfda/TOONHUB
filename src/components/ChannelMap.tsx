@@ -43,6 +43,8 @@ export function ChannelMap({ characters, activeIndex, onSelect }: ChannelMapProp
               key={character.code}
               type="button"
               onClick={() => onSelect(index)}
+              data-cursor="channel-field"
+              data-cursor-color={character.bg}
               className={`cinematic-field signal-field relative min-h-[220px] overflow-hidden p-6 text-left text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 ${
                 activeIndex === index ? 'signal-pulse' : ''
               }`}

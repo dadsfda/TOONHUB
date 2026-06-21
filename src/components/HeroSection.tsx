@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
 import { ArrowRight } from 'lucide-react';
 import type { ToonhubCharacter } from '../data/toonhub';
 import { CharacterDetailModal } from './CharacterDetailModal';
@@ -17,6 +17,7 @@ const grainSvg =
 const readableTextShadow = '0 2px 14px rgba(88, 36, 20, 0.32)';
 
 export function HeroSection({ characters, activeIndex, onActiveIndexChange }: HeroSectionProps) {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -58,6 +59,28 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
     if (index === roles.left) return 'left';
     if (index === roles.right) return 'right';
     return 'back';
+  };
+
+  const updatePointerDepth = (event: PointerEvent<HTMLElement>) => {
+    if (isMobile) return;
+
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const rect = section.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+
+    section.style.setProperty('--cursor-depth-x', x.toFixed(3));
+    section.style.setProperty('--cursor-depth-y', y.toFixed(3));
+  };
+
+  const resetPointerDepth = () => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    section.style.setProperty('--cursor-depth-x', '0');
+    section.style.setProperty('--cursor-depth-y', '0');
   };
 
   const getItemStyle = (role: Role): CSSProperties => {
@@ -111,8 +134,11 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
 
   return (
     <section
+      ref={sectionRef}
       aria-label="TOONHUB signal carousel"
       className="hero-cinematic relative w-full overflow-hidden"
+      onPointerMove={updatePointerDepth}
+      onPointerLeave={resetPointerDepth}
       style={{
         height: '100vh',
         backgroundColor: activeItem.bg,
@@ -135,7 +161,7 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
       />
 
       <div
-        className="absolute inset-x-0 flex items-center justify-center pointer-events-none select-none"
+        className="hero-title-layer absolute inset-x-0 flex items-center justify-center pointer-events-none select-none"
         style={{ zIndex: 2, top: isMobile ? '8%' : '4%' }}
       >
         <div
@@ -173,6 +199,8 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
               } ${role !== 'center' ? 'is-side' : ''} ${
                 role === 'back' ? 'is-back' : ''
               }`}
+              data-cursor={role === 'center' ? undefined : 'character'}
+              data-cursor-color={character.bg}
               onClick={() => navigateTo(index)}
               style={{
                 ...getItemStyle(role),
@@ -228,6 +256,8 @@ export function HeroSection({ characters, activeIndex, onActiveIndexChange }: He
       <button
         type="button"
         onClick={() => setIsDetailOpen(true)}
+        data-cursor="discover"
+        data-cursor-color={activeItem.bg}
         className="hero-discover hero-enter-copy motion-delay-3 absolute bottom-6 right-4 flex items-center border-0 bg-transparent p-0 uppercase text-white transition-opacity duration-200 hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:bottom-20 sm:right-10"
         style={{
           zIndex: 60,

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChannelMap } from './components/ChannelMap';
 import { CharacterChannels } from './components/CharacterChannels';
+import { CursorSignal } from './components/CursorSignal';
 import { FutureDrops } from './components/FutureDrops';
 import { HeroSection } from './components/HeroSection';
 import { SeasonSection } from './components/SeasonSection';
@@ -12,6 +13,7 @@ function App() {
 
   return (
     <div className="relative w-full overflow-x-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <CursorSignal />
       <HeroSection characters={characters} activeIndex={activeIndex} onActiveIndexChange={setActiveIndex} />
       <UniverseIntro copy={universeIntro} />
       <SeasonSection title={seasonTitle} copy={seasonCopy} />
