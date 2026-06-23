@@ -1,4 +1,5 @@
 import { useInView } from '../hooks/useInView';
+import { publicAsset } from '../utils/assets';
 
 export function FutureDrops() {
   const { ref, isInView } = useInView<HTMLElement>({ once: false });
@@ -12,7 +13,7 @@ export function FutureDrops() {
     >
       <div className="pointer-events-none absolute inset-0 z-0">
         <img
-          src="/figurines/figurine-1.webp"
+          src={publicAsset('/figurines/figurine-1.webp')}
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -20,7 +21,7 @@ export function FutureDrops() {
           className="cinematic-bg-figure absolute -bottom-20 left-[2vw] h-[360px] w-auto opacity-[0.12] blur-[2px] sm:h-[520px]"
         />
         <img
-          src="/figurines/figurine-2.webp"
+          src={publicAsset('/figurines/figurine-2.webp')}
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -28,7 +29,7 @@ export function FutureDrops() {
           className="cinematic-bg-figure absolute -bottom-24 left-[28vw] hidden h-[420px] w-auto opacity-[0.1] blur-[2px] sm:block"
         />
         <img
-          src="/figurines/figurine-3.webp"
+          src={publicAsset('/figurines/figurine-3.webp')}
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -36,7 +37,7 @@ export function FutureDrops() {
           className="cinematic-bg-figure absolute -bottom-24 right-[22vw] hidden h-[400px] w-auto opacity-[0.1] blur-[2px] sm:block"
         />
         <img
-          src="/figurines/figurine-4.webp"
+          src={publicAsset('/figurines/figurine-4.webp')}
           alt=""
           aria-hidden="true"
           loading="lazy"

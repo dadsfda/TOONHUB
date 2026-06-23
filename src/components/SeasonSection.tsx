@@ -1,4 +1,5 @@
 import { useInView } from '../hooks/useInView';
+import { publicAsset } from '../utils/assets';
 
 type SeasonSectionProps = {
   title: string;
@@ -17,7 +18,7 @@ export function SeasonSection({ title, copy }: SeasonSectionProps) {
     >
       <div className="pointer-events-none absolute inset-0 z-0 opacity-90">
         <img
-          src="/figurines/figurine-2.webp"
+          src={publicAsset('/figurines/figurine-2.webp')}
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -25,7 +26,7 @@ export function SeasonSection({ title, copy }: SeasonSectionProps) {
           className="cinematic-bg-figure absolute -left-12 bottom-0 h-[360px] w-auto opacity-[0.24] sm:left-[5vw] sm:h-[520px]"
         />
         <img
-          src="/figurines/figurine-3.webp"
+          src={publicAsset('/figurines/figurine-3.webp')}
           alt=""
           aria-hidden="true"
           loading="lazy"

@@ -1,4 +1,5 @@
 import { useInView } from '../hooks/useInView';
+import { publicAsset } from '../utils/assets';
 
 type UniverseIntroProps = {
   copy: string;
@@ -15,7 +16,7 @@ export function UniverseIntro({ copy }: UniverseIntroProps) {
       }`}
     >
       <img
-        src="/figurines/figurine-1.webp"
+        src={publicAsset('/figurines/figurine-1.webp')}
         alt=""
         aria-hidden="true"
         loading="lazy"
@@ -23,7 +24,7 @@ export function UniverseIntro({ copy }: UniverseIntroProps) {
         className="cinematic-bg-figure pointer-events-none absolute -bottom-16 -right-10 z-0 h-[420px] w-auto opacity-[0.34] saturate-125 sm:-bottom-24 sm:right-[6vw] sm:h-[660px]"
       />
       <img
-        src="/figurines/figurine-4.webp"
+        src={publicAsset('/figurines/figurine-4.webp')}
         alt=""
         aria-hidden="true"
         loading="lazy"

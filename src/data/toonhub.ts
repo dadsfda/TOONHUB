@@ -1,3 +1,5 @@
+import { publicAsset } from '../utils/assets';
+
 export type ToonhubCharacter = {
   src: string;
   bg: string;
@@ -22,7 +24,7 @@ export type ToonhubCharacter = {
 
 export const characters: ToonhubCharacter[] = [
   {
-    src: '/figurines/figurine-1.webp',
+    src: publicAsset('/figurines/figurine-1.webp'),
     bg: '#F4845F',
     panel: '#F79B7F',
     name: 'Bubble Chief',
@@ -47,7 +49,7 @@ export const characters: ToonhubCharacter[] = [
     ],
   },
   {
-    src: '/figurines/figurine-2.webp',
+    src: publicAsset('/figurines/figurine-2.webp'),
     bg: '#6BBF7A',
     panel: '#85CC92',
     name: 'Mint Scout',
@@ -72,7 +74,7 @@ export const characters: ToonhubCharacter[] = [
     ],
   },
   {
-    src: '/figurines/figurine-3.webp',
+    src: publicAsset('/figurines/figurine-3.webp'),
     bg: '#E882B4',
     panel: '#ED9DC4',
     name: 'Pink Signal',
@@ -97,7 +99,7 @@ export const characters: ToonhubCharacter[] = [
     ],
   },
   {
-    src: '/figurines/figurine-4.webp',
+    src: publicAsset('/figurines/figurine-4.webp'),
     bg: '#6EB5FF',
     panel: '#8DC4FF',
     name: 'Sky Runner',
